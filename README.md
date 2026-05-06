@@ -1,30 +1,20 @@
-# StoryPost-AI
-An AI-powered content orchestration platform that transforms brand voices and audience personas into high-impact social media storytelling.
-Built with React &amp; Firebase
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-🚀 StoryPost AI
-Bridging the gap between brand identity and automated storytelling.
+# Run and deploy your AI Studio app
 
-📖 Overview
-StoryPost AI is a full-stack application designed to help tech entrepreneurs and brands maintain a consistent "voice" across social platforms. By selecting industry templates and defining specific audience personas, users can generate tailored content that resonates with their target market.
+This contains everything you need to run your app locally.
 
-✨ Key Features
-Dynamic Persona Mapping: Save and sync custom audience profiles (e.g., "Tech Entrepreneur") using Google Firestore.
+View your app in AI Studio: https://ai.studio/apps/6ca3233e-6d91-4fb3-ad02-3b0c45349d28
 
-Brand Voice Customization: Toggle between professional, authoritative, or casual tones to guide the AI's output.
+## Run Locally
 
-Multi-Platform Ready: One-click formatting for LinkedIn, Instagram, and X (Twitter).
+**Prerequisites:**  Node.js
 
-Secure Authentication: Integrated Firebase Auth for secure user login and profile persistence.
 
-🛠️ Tech Stack
-Frontend: JavaScript, React, Tailwind CSS
-
-Backend: Firebase (Firestore & Auth)
-
-AI Engine: Gemini (via Google AI Studio)
-
-Deployment: Vercel/GitHub  
-
-🏗️ Why I Built This
-As part of my journey in full-stack development, I wanted to explore how generative AI can be constrained by specific business rules (Brand Voice & Persona) to produce high-quality, professional outputs rather than generic text.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

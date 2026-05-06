@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isSignedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation Helpers
+    function isValidPersona(data) {
+      return data.keys().hasAll(['id', 'name']) &&
+             data.id is string && data.id.size() <= 64 &&
+             data.name is string && data.name.size() <= 100 &&
+             (data.get('age', '') is string) &&
+             (data.get('location', '') is string) &&
+             (data.get('occupation', '') is string) &&
+             (data.get('interests', '') is string) &&
+             (data.get('painPoints', '') is string) &&
+             (data.get('onlineBehavior', '') is string);
+    }
+
+    function isValidVoice(data) {
+      return data.keys().hasAll(['id', 'name', 'description']) &&
+             data.id is string &&
+             data.name is string && data.name.size() <= 100 &&
+             data.description is string && data.description.size() <= 1000;
+    }
+
+    function isValidPost(data) {
+      return data.keys().hasAll(['id', 'text', 'platform', 'status']) &&
+             data.id is string &&
+             data.text is string && data.text.size() <= 5000 &&
+             data.platform in ['LinkedIn', 'Instagram', 'Twitter/X', 'Facebook', 'TikTok'] &&
+             data.status in ['scheduled', 'published', 'failed'] &&
+             (data.get('testGroupId', '') is string) &&
+             (data.get('variant', '') is string);
+    }
+
+    function isValidConfig(data) {
+      return (data.get('brandLogo', null) == null || data.brandLogo is string);
+    }
+
+    // Collection Rules
+    match /users/{userId} {
+      match /personas/{personaId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidPersona(incoming()) && personaId == incoming().id;
+        allow update: if isOwner(userId) && isValidPersona(incoming()) && incoming().id == existing().id;
+        allow delete: if isOwner(userId);
+      }
+
+      match /voices/{voiceId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidVoice(incoming()) && voiceId == incoming().id;
+        allow update: if isOwner(userId) && isValidVoice(incoming()) && incoming().id == existing().id;
+        allow delete: if isOwner(userId);
+      }
+
+      match /posts/{postId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidPost(incoming()) && postId == incoming().id;
+        allow update: if isOwner(userId) && isValidPost(incoming()) && incoming().id == existing().id;
+        allow delete: if isOwner(userId);
+      }
+
+      match /config/{configId} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) && isValidConfig(incoming());
+      }
+    }
+  }
+}

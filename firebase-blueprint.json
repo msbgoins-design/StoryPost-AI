@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "Persona": {
+      "title": "Persona",
+      "description": "Target audience persona profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "age": { "type": "string" },
+        "location": { "type": "string" },
+        "occupation": { "type": "string" },
+        "interests": { "type": "string" },
+        "painPoints": { "type": "string" },
+        "onlineBehavior": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "BrandVoice": {
+      "title": "Brand Voice",
+      "description": "Custom brand voice definition",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "isCustom": { "type": "boolean" }
+      },
+      "required": ["id", "name", "description"]
+    },
+    "SavedPost": {
+      "title": "Saved Post",
+      "description": "A generated and saved social media post",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "imagePrompt": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "platform": { "type": "string" },
+        "personaName": { "type": "string" },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["scheduled", "published", "failed"] },
+        "testGroupId": { "type": "string", "description": "ID for grouping A/B test variations" },
+        "variant": { "type": "string", "description": "Variant label (e.g., A, B, C)" },
+        "adjustments": {
+          "type": "object",
+          "properties": {
+            "brightness": { "type": "number" },
+            "contrast": { "type": "number" },
+            "filter": { "type": "string" },
+            "zoom": { "type": "number" }
+          }
+        }
+      },
+      "required": ["id", "text", "platform", "status"]
+    },
+    "UserConfig": {
+      "title": "User Config",
+      "description": "Global user settings and assets",
+      "type": "object",
+      "properties": {
+        "brandLogo": { "type": "string", "description": "Base64 encoded logo or URL" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}/personas/{personaId}": {
+      "schema": "Persona",
+      "description": "User's audience personas"
+    },
+    "/users/{userId}/voices/{voiceId}": {
+      "schema": "BrandVoice",
+      "description": "User's custom brand voices"
+    },
+    "/users/{userId}/posts/{postId}": {
+      "schema": "SavedPost",
+      "description": "User's content library"
+    },
+    "/users/{userId}/config/main": {
+      "schema": "UserConfig",
+      "description": "User's global configuration and assets"
+    }
+  }
+}
